@@ -44,7 +44,7 @@ class MainClass( Plugin.Plugin ):
 
         self.cb_ids['nick-changed'] = self.connect(
                 'nick-changed', self.on_nick_changed)
-        self.cb_ids['messagen-changed'] = self.connect(
+        self.cb_ids['message-changed'] = self.connect(
                 'personal-message-changed', self.on_message_changed)
         self.cb_ids['picture-changed'] = self.connect(
                 'display-picture-changed', self.on_picture_changed)
@@ -55,7 +55,9 @@ class MainClass( Plugin.Plugin ):
         '''stop the plugin'''
         #self._set_nick("bu!")
         self.controller.Slash.unregister('imitate')
-        self.disconnect(self.nick_changed_id)
+        self.disconnect(self.cb_ids['nick-changed'])
+        self.disconnect(self.cb_ids['message-changed'])
+        self.disconnect(self.cb_ids['picture-changed'])
         self.enabled = False
     
     def check( self ):
