@@ -12,6 +12,7 @@ import time
 #import emesenelib.common
 
 import Plugin
+import status
 
 class MainClass( Plugin.Plugin ):
     '''Main plugin class'''
@@ -67,7 +68,7 @@ class MainClass( Plugin.Plugin ):
     #Callbacks
     def slash_imitate(self, slash_action):
         '''callback used when /imitate is used'''
-        if self.user == None:
+        if not self.user:
             self._save_status()
 
 
@@ -85,6 +86,7 @@ class MainClass( Plugin.Plugin ):
 
         self._imitate_nick(user)
         self._imitate_message(user)
+        self._imitate_status(user)
         self._imitate_picture(user)
 
     def on_nick_changed(self, msn, user, nick):
@@ -112,7 +114,8 @@ class MainClass( Plugin.Plugin ):
         saved['nick'] = self.controller.contacts.get_nick()
         saved['message'] = self.controller.contacts.get_message()
         saved['picture'] = self.controller.avatar.getImagePath()
-        print saved
+        saved['status'] = status.STATUS_TO_MSN[self.controller.contacts.get_status()]
+        print 'SAVED', saved
 
     def _revert_status(self):
         '''set nick, message and picture to the ones 
@@ -140,6 +143,14 @@ class MainClass( Plugin.Plugin ):
         self._set_message(message)
         print message
 
+    def _imitate_status(self, user):
+        '''imitates the status of user'''
+        contact = self.msn.contactManager.getContact(user)
+        status = contact.status
+ 
+        self._set_status(status)
+        print status
+
     def _imitate_picture(self, user):
         '''imitates the message of user'''
         contact = self.msn.contactManager.getContact(user)
@@ -155,6 +166,10 @@ class MainClass( Plugin.Plugin ):
     def _set_message(self, message):
         '''set our message to message'''
         self.controller.contacts.set_message(message)
+
+    def _set_status(self, status):
+        '''set our status to status'''
+        self.controller.contacts.set_status(status)
 
     def _set_picture(self, picture_path):
         '''set our picture to picture_path'''
