@@ -16,15 +16,15 @@ import status
 
 class MainClass( Plugin.Plugin ):
     '''Main plugin class'''
-    description = _('Copy nick, PM, and image from someone')
-    authors = { 'BoySka' : 'boyska gmail com' }
-    website = 'http://emesene.org'
-    displayName = _('Imitate')
-    name = 'Imitate'
-
     def __init__(self, controller, msn):
         '''constructor'''
         Plugin.Plugin.__init__( self, controller, msn )
+        self.description = _('Copy nick, PM, and image from someone')
+        self.authors = { 'BoySka' : 'boyska gmail com' }
+        self.website = 'http://emesene.org'
+        self.displayName = _('Imitate')
+        self.name = 'Imitate'
+
 
         self.controller = controller
         self.msn = msn
