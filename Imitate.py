@@ -26,7 +26,6 @@ class MainClass( Plugin.Plugin ):
         '''constructor'''
         Plugin.Plugin.__init__( self, controller, msn )
 
-
         self.controller = controller
         self.msn = msn
 
@@ -91,18 +90,18 @@ class MainClass( Plugin.Plugin ):
 
     def on_nick_changed(self, msn, user, nick):
         '''callback used when someone changes his nick'''
-        if user == self.user:
+        if user and user == self.user:
             self._set_nick(nick)
 
     def on_message_changed(self, msn, user, message):
         '''callback used when someone changes his message'''
-        if user == self.user:
+        if user and user == self.user:
             time.sleep(1)
             self._set_message(message)
 
     def on_picture_changed(self,  msn, user, creator, email):
         '''callback used when someone changes his picture'''
-        if user == self.user:
+        if user and user == self.user:
             time.sleep(1)
             self._imitate_picture(email)
 
