@@ -19,7 +19,7 @@ class MainClass( Plugin.Plugin ):
     def __init__(self, controller, msn):
         '''constructor'''
         Plugin.Plugin.__init__( self, controller, msn )
-        self.description = _('Copy nick, PM, and image from someone')
+        self.description = _('Copy nick, PM, image and status from someone and autoupdates')
         self.authors = { 'BoySka' : 'boyska gmail com' }
         self.website = 'http://emesene.org'
         self.displayName = _('Imitate')
@@ -53,7 +53,6 @@ class MainClass( Plugin.Plugin ):
 
     def stop( self ):
         '''stop the plugin'''
-        #self._set_nick("bu!")
         self.controller.Slash.unregister('imitate')
         self.disconnect(self.cb_ids['nick-changed'])
         self.disconnect(self.cb_ids['message-changed'])
@@ -113,8 +112,8 @@ class MainClass( Plugin.Plugin ):
         saved['nick'] = self.controller.contacts.get_nick()
         saved['message'] = self.controller.contacts.get_message()
         saved['picture'] = self.controller.avatar.getImagePath()
-        saved['status'] = status.STATUS_TO_MSN[self.controller.contacts.get_status()]
-        print 'SAVED', saved
+        #saved['status'] = status.STATUS_TO_MSN[self.controller.contacts.get_status()]
+        saved['status'] = self.controller.contacts.get_status() or 'NLN'
 
     def _revert_status(self):
         '''set nick, message and picture to the ones 
@@ -126,13 +125,13 @@ class MainClass( Plugin.Plugin ):
         #    self.controller.config.getAvatarsCachePath(),
         #    saved['picture']))
         self._set_picture(saved['picture'])
+        self._set_status(saved['status'])
 
 
     def _imitate_nick(self, user):
         '''imitates the nick of user'''
         nick = self.controller.contacts.get_nick(user)
         self._set_nick(nick)
-        print nick
     
     def _imitate_message(self, user):
         '''imitates the message of user'''
@@ -140,26 +139,21 @@ class MainClass( Plugin.Plugin ):
         message = contact.personalMessage
  
         self._set_message(message)
-        print message
 
     def _imitate_status(self, user):
         '''imitates the status of user'''
         contact = self.msn.contactManager.getContact(user)
-        status = contact.status
+        stat = contact.status
  
-        self._set_status(status)
-        print status
+        self._set_status(stat)
 
     def _imitate_picture(self, user):
         '''imitates the message of user'''
         contact = self.msn.contactManager.getContact(user)
         picture = contact.displayPicturePath
-        print picture
-        print dir(contact)
         if picture:
             picture_path = os.path.join(
                     self.controller.config.getCachePath(), picture)
-            print picture_path
             self._set_picture(picture_path)
 
     def _set_message(self, message):
@@ -172,7 +166,6 @@ class MainClass( Plugin.Plugin ):
 
     def _set_picture(self, picture_path):
         '''set our picture to picture_path'''
-        print 'set to', picture_path
         self.controller.changeAvatar(picture_path)
 
     def _set_nick(self, nick):
